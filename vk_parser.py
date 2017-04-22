@@ -1,8 +1,12 @@
+import datetime
 import time
 
 import vk
+from dateutil.parser import parse
 
-session = vk.Session()
+token = '74701fb474701fb474701fb494742b9f2b7747074701fb42c8b34241d33607df85a6114'
+
+session = vk.Session(access_token=token)
 vkapi = vk.API(session)
 
 
@@ -73,3 +77,34 @@ def get_user_posts(user):
     res = map(lambda x: x.strip(), res)
 
     return list(filter(lambda x: x != '', res))
+
+
+def get_posts_within_area(query='иннополис', latitude='55.752874', longitude='48.743440'):
+    resp = vkapi.newsfeed.search(q=query, latitude=latitude, longitude=longitude, count=200)
+    posts = map(lambda x: x["text"].strip(), resp[1:])
+    return list(filter(lambda x: x != '', posts))
+
+
+def get_user_data(user):
+    try:
+        resp = vkapi.users.get(user_ids=[user], fields=["city", "sex", "bdate"], name_case="Nom")[0]
+
+        name = resp["first_name"] + " " + resp["last_name"]
+        sex = resp["sex"]
+
+        if sex == 0:
+            sex = ''
+        if sex == 1:
+            sex = 'жен.'
+        if sex == 2:
+            sex = 'муж.'
+
+        city = resp["city"]
+
+        age = (datetime.datetime.now() - parse(resp["bdate"])).days // 365
+
+        vk_id = resp["uid"]
+
+        return {"vk_id": vk_id, "name": name, "sex": sex, "age": age, "city": city}
+    except:
+        return {"vk_id": user}
