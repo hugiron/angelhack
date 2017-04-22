@@ -6,6 +6,7 @@ import api.vkontakte as vkontakte
 import api.twitter as twitter
 from server import database
 from subprocess import run, PIPE
+from concurrent.futures import ThreadPoolExecutor
 
 
 handler = {
@@ -50,11 +51,12 @@ def find_network(network, user_id):
         'instagram': list(),
         'twitter': list()
     }
-    for key in data:
-        for id in data[key]:
-            for uid in handler[key](id):
-                friends[key].append(uid)
-            print("Parsing complete " + key + " " + str(id))
+    with ThreadPoolExecutor(max_workers=12) as executor:
+        for key in data:
+            for item in executor.map(lambda x: handler[key](x), data[key]):
+                for uid in item:
+                    friends[key].append(uid)
+            print("Parsing complete " + key)
     print("Friend list is generated") # DEBUG
     temp = {
         'vk': list(),
@@ -68,7 +70,7 @@ def find_network(network, user_id):
             try:
                 vector = [float(item) for item in response.stdout.strip().split(' ')]
                 factor = model.predict(vector)
-                if factor >= 0.8:
+                if factor >= 0.7:
                     temp[key].append((id, factor))
             except:
                 pass

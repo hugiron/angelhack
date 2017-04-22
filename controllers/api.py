@@ -33,4 +33,6 @@ def get_dashboard_from_text():
 def find():
     network = request.args['network']
     user_id = int(request.args['user_id'])
-    return json.dumps(finder.find_network(network, user_id))
+    result = json.dumps(finder.find_network(network, user_id))
+    print(result)
+    return result
