@@ -53,9 +53,9 @@ def get_user_posts(user):
     except:
         return []
 
-    count = posts[0]
+    count = posts["count"]
 
-    res = [posts[1]['text']]
+    res = [posts["items"][0]["text"]]
     last = 1
 
     while len(res) < count:
@@ -68,10 +68,10 @@ def get_user_posts(user):
                 pass
             break
 
-        for x in posts[1:]:
+        for x in posts["items"]:
             res.append(x['text'])
 
-        last += len(posts[1:])
+        last += len(posts["items"])
 
     res = map(lambda x: x.strip(), res)
 
@@ -80,7 +80,7 @@ def get_user_posts(user):
 
 def get_posts_within_area(query='иннополис', latitude='55.752874', longitude='48.743440'):
     resp = vkapi.newsfeed.search(q=query, latitude=latitude, longitude=longitude, count=200)
-    posts = map(lambda x: x["text"].strip(), resp[1:])
+    posts = map(lambda x: x["text"].strip(), resp["items"])
     return list(filter(lambda x: x != '', posts))
 
 
@@ -98,16 +98,14 @@ def get_user_data(user):
         if sex == 2:
             sex = 'муж.'
 
-        city_id = resp["city"]
-
-        city = vkapi.database.getCitiesById(city_ids=[city_id])[0]["name"]
+        city = resp["city"]["title"]
 
         age = (datetime.datetime.now() - parse(resp["bdate"])).days // 365
 
         if age <= 0:
             age = ''
 
-        vk_id = resp["uid"]
+        vk_id = resp["id"]
 
         return {"vk_id": vk_id, "name": name, "sex": sex, "age": age, "city": city}
     except:
