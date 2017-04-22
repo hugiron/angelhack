@@ -2,14 +2,14 @@ HOST = '0.0.0.0'
 PORT = 8081
 
 DEBUG = True
-SECRET_KEY = 'Tkrkje(0p{C"uR+i.4sVY,uS>K.5d/8g'
+SECRET_KEY = 'bU:ajd}UXNp4v@nKAcO-d-P_Vb2Bit6e'
 SESSION_LIFETIME = dict(days=365)
 
-MONGODB_HOST = 'localhost'
+MONGODB_HOST = '52.169.73.179'
 MONGODB_PORT = 27017
-MONGODB_DB = 'vk4me'
-MONGODB_USERNAME = 'spylogger'
-MONGODB_PASSWORD = 'Re85wwBA5C6JSzp4'
+MONGODB_DB = 'bindex'
+MONGODB_USERNAME = 'bindex'
+MONGODB_PASSWORD = 'LeDtQw9m'
 
 DEBUG_TB_PANELS = [
     'flask_mongoengine.panels.MongoDebugPanel'
