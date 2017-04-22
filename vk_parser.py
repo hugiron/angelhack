@@ -99,9 +99,14 @@ def get_user_data(user):
         if sex == 2:
             sex = 'муж.'
 
-        city = resp["city"]
+        city_id = resp["city"]
+
+        city = vkapi.database.getCitiesById(city_ids=[city_id])[0]["name"]
 
         age = (datetime.datetime.now() - parse(resp["bdate"])).days // 365
+
+        if age <= 0:
+            age = ''
 
         vk_id = resp["uid"]
 
