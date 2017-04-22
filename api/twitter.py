@@ -21,14 +21,17 @@ def get_username_by_id(user_id):
 
 def get_user_relationships(user_id):
     result = list()
-    username = get_username_by_id(user_id)
-    if not username:
-        return result
-    next_cursor = "/" + username + "/following"
-    while next_cursor:
-        response = rqst.get("https://mobile.twitter.com" + next_cursor).text
-        parser = BeautifulSoup(response, 'html.parser')
-        next_cursor = parser.find('div', attrs={'class': 'w-button-more'}).find('a').get('href')
-        for username in parser.find_all('span', attrs={'class': 'username'}):
-            result.append(get_user_id_by_username(username.text[1:]))
+    try:
+        username = get_username_by_id(user_id)
+        if not username:
+            return result
+        next_cursor = "/" + username + "/following"
+        while next_cursor:
+            response = rqst.get("https://mobile.twitter.com" + next_cursor).text
+            parser = BeautifulSoup(response, 'html.parser')
+            next_cursor = parser.find('div', attrs={'class': 'w-button-more'}).find('a').get('href')
+            for username in parser.find_all('span', attrs={'class': 'username'}):
+                result.append(get_user_id_by_username(username.text[1:]))
+    except:
+        pass
     return list(set(result))

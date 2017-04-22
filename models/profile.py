@@ -2,13 +2,13 @@ from server import database
 
 
 class Profile(database.DynamicDocument):
-    vk = database.ListField(int, default=[])
-    facebook = database.ListField(int, default=[])
-    instagram = database.ListField(int, default=[])
-    twitter = database.ListField(int, default=[])
-    skype = database.ListField(str, default=[])
-    email = database.ListField(str, default=[])
-    phone = database.ListField(str, default=[])
+    vk = database.ListField(default=[])
+    facebook = database.ListField(default=[])
+    instagram = database.ListField(default=[])
+    twitter = database.ListField(default=[])
+    skype = database.ListField(default=[])
+    email = database.ListField(default=[])
+    phone = database.ListField(default=[])
 
     meta = {
         'collection': 'profile'
