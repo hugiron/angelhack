@@ -4,3 +4,5 @@ requests
 flask
 flask_mongoengine
 flask_debugtoolbar
+gensim
+pymystem3
