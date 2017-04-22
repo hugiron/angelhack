@@ -4,33 +4,32 @@ import time
 import vk
 from dateutil.parser import parse
 
-token = '74701fb474701fb474701fb494742b9f2b7747074701fb42c8b34241d33607df85a6114'
-
+token = '6a757b028f97aff9dce19e3fc55d52daa06ad05aba65c0d1cb7b605b538cfd04466cfbba01a8bc496d3c7'
 session = vk.Session(access_token=token)
-vkapi = vk.API(session)
+vkapi = vk.API(session, v='5.63')
 
 
 def get_group_members(group):
     members = vkapi.groups.getMembers(group_id=group, count=1)
-
     count = members['count']
 
-    res = set(members['users'])
+    res = set(members['items'])
     last = 1
 
     while len(res) < count:
         while True:
             try:
-                members = vkapi.groups.getMembers(group_id=group, offset=last)
-            except:
+                members = vkapi.execute.get_members(group=group, offset=last)
                 time.sleep(1)
+            except:
+                time.sleep(3)
                 pass
             break
 
-        for x in members['users']:
+        for x in members:
             res.add(x)
 
-        last += len(members['users'])
+        last += len(members)
 
     return res
 
@@ -38,7 +37,6 @@ def get_group_members(group):
 def monitor_group(group):
     members = get_group_members(group)
     members_last = members
-
     while True:
         members = get_group_members(group)
 
@@ -64,6 +62,7 @@ def get_user_posts(user):
         while True:
             try:
                 posts = vkapi.wall.get(owner_id=user, offset=last)
+                time.sleep(1 / 3)
             except:
                 time.sleep(1)
                 pass
