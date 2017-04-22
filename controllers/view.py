@@ -5,7 +5,7 @@ from server import app
 def index():
     # for unlogined users - view landing page
     # for logined users - view manual
-    pass
+    return render_template('index.html')
 
 
 def dashboard():
