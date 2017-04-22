@@ -7,6 +7,7 @@ import api.twitter as twitter
 from server import database
 from subprocess import run, PIPE
 from concurrent.futures import ThreadPoolExecutor
+import numpy as np
 
 
 handler = {
@@ -67,13 +68,13 @@ def find_network(network, user_id):
         for id in data[key]:
             response = run(['dotnet', 'trainer/Bindex.Trainer.dll', network, str(user_id), key, str(id)],
                            stdout=PIPE, stderr=PIPE, universal_newlines=True)
-            try:
-                vector = [float(item) for item in response.stdout.strip().split(' ')]
-                factor = model.predict(vector)
-                if factor >= 0.7:
-                    temp[key].append((id, factor))
-            except:
-                pass
+            #try:
+            vector = [float(item) for item in response.stdout.strip().split(' ')]
+            factor = model.predict(np.array([vector]))[0][0]
+            if factor >= 0.5:
+                temp[key].append((id, factor))
+            #except:
+                #pass
     print("Neural network is used") # DEBUG
     for key in temp:
         if not temp[key]:
