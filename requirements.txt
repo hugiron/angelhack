@@ -1,4 +1,5 @@
 bs4
+vk
 requests
 flask
 flask_mongoengine

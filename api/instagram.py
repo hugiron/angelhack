@@ -231,25 +231,31 @@ def get_api_request(params):
 
 
 def get_user_relationships(user_id):
-    max_analyze_media_count = 100
-    user = get_account_by_id(user_id)
-    return list(set(itertools.chain(*list(map(lambda x: get_likes_and_comments_authors(x.code),
-                                     get_medias(user.username, max_analyze_media_count))))))
+    try:
+        max_analyze_media_count = 100
+        user = get_account_by_id(user_id)
+        return list(set(itertools.chain(*list(map(lambda x: get_likes_and_comments_authors(x.code),
+                                         get_medias(user.username, max_analyze_media_count))))))
+    except:
+        return []
 
 
 def get_likes_and_comments_authors(code):
     result = list()
-    request = rqst.get(get_media_page_link_by_code(code)).text
-    parser = BeautifulSoup(request, 'html.parser')
-    script = None
-    for item in parser.findAll('script', attrs={'type': 'text/javascript'}):
-        if item.text.strip().startswith('window._sharedData'):
-            script = item.text.strip()
-    if not script:
-        return result
-    data = json.loads(script[21:len(script) - 1])
-    for item in data['entry_data']['PostPage'][0]['graphql']['shortcode_media']['edge_media_to_comment']['edges']:
-        result.append(int(item['node']['owner']['id']))
-    for item in data['entry_data']['PostPage'][0]['graphql']['shortcode_media']['edge_media_preview_like']['edges']:
-        result.append(int(item['node']['id']))
+    try:
+        request = rqst.get(get_media_page_link_by_code(code)).text
+        parser = BeautifulSoup(request, 'html.parser')
+        script = None
+        for item in parser.findAll('script', attrs={'type': 'text/javascript'}):
+            if item.text.strip().startswith('window._sharedData'):
+                script = item.text.strip()
+        if not script:
+            return result
+        data = json.loads(script[21:len(script) - 1])
+        for item in data['entry_data']['PostPage'][0]['graphql']['shortcode_media']['edge_media_to_comment']['edges']:
+            result.append(int(item['node']['owner']['id']))
+        for item in data['entry_data']['PostPage'][0]['graphql']['shortcode_media']['edge_media_preview_like']['edges']:
+            result.append(int(item['node']['id']))
+    except:
+        pass
     return result
