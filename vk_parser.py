@@ -56,6 +56,12 @@ def get_user_posts(user):
     count = posts["count"]
 
     res = [posts["items"][0]["text"]]
+
+    try:
+        res.append(posts["items"][0]["copy_history"][0]["text"])
+    except:
+        pass
+
     last = 1
 
     while len(res) < count:
@@ -70,6 +76,10 @@ def get_user_posts(user):
 
         for x in posts["items"]:
             res.append(x['text'])
+            try:
+                res.append(x['copy_history'][0]['text'])
+            except:
+                pass
 
         last += len(posts["items"])
 
