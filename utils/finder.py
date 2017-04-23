@@ -1,10 +1,9 @@
-from keras.models import load_model
 from mongoengine import Q
 from models.profile import Profile
 import api.instagram as instagram
 import api.vkontakte as vkontakte
 import api.twitter as twitter
-from server import database
+from server import database, model, graph
 from subprocess import run, PIPE
 from concurrent.futures import ThreadPoolExecutor
 import numpy as np
@@ -15,9 +14,6 @@ handler = {
     'instagram': instagram.get_user_relationships,
     'twitter': twitter.get_user_relationships
 }
-
-
-model = load_model('network')
 
 
 def find_network(network, user_id):
@@ -70,7 +66,8 @@ def find_network(network, user_id):
                            stdout=PIPE, stderr=PIPE, universal_newlines=True)
             #try:
             vector = [float(item) for item in response.stdout.strip().split(' ')]
-            factor = model.predict(np.array([vector]))[0][0]
+            with graph.as_default():
+                factor = model.predict(np.array([vector]))[0][0]
             if factor >= 0.5:
                 temp[key].append((id, factor))
             #except:
