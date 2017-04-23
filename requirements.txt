@@ -5,3 +5,5 @@ flask
 flask_mongoengine
 flask_debugtoolbar
 keras
+gensim
+pymystem3
