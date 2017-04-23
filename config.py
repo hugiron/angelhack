@@ -1,0 +1,17 @@
+HOST = '0.0.0.0'
+PORT = 8081
+
+DEBUG = True
+SECRET_KEY = 'bU:ajd}UXNp4v@nKAcO-d-P_Vb2Bit6e'
+SESSION_LIFETIME = dict(days=365)
+
+MONGODB_HOST = '52.169.73.179'
+MONGODB_PORT = 27017
+MONGODB_DB = 'bindex'
+MONGODB_USERNAME = 'bindex'
+MONGODB_PASSWORD = 'LeDtQw9m'
+
+DEBUG_TB_PANELS = [
+    'flask_mongoengine.panels.MongoDebugPanel'
+]
+DEBUG_TB_INTERCEPT_REDIRECTS = False
